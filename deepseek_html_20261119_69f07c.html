@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repaso Ciberseguridad · 2º ESO</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+  body {
+    background: linear-gradient(145deg, #0b1a2e 0%, #1a2f3f 100%);
+    min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;
+    padding: 1rem;
+  }
+  .app-container {
+    max-width: 1150px; width: 100%;
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-radius: 2.5rem; padding: 2rem 1.8rem;
+    box-shadow: 0 25px 40px -10px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,255,255,0.15);
+    border: 1px solid rgba(0,255,255,0.2);
+  }
+  h1 {
+    font-size: 2.1rem; font-weight: 700; text-align: center;
+    color: #a5f0ff; text-shadow: 0 0 10px #00c8ff, 0 0 20px #0077be;
+    letter-spacing: -0.5px; margin-bottom: 0.3rem;
+  }
+  .subtitle { text-align:center; color:#b0e0ff; font-weight:400; margin-bottom:1.2rem; font-size:1rem; border-bottom:1px dashed #3f6f8f; padding-bottom:0.8rem; }
+  .user-info { text-align:center; color:#8ef0ff; font-size:1rem; margin-bottom:0.4rem; font-weight:500; display:flex; justify-content:center; align-items:center; gap:1rem; flex-wrap:wrap; }
+  .user-info strong { color:white; background:#0a2d3d; padding:0.2rem 0.8rem; border-radius:2rem; border:1px solid #2d6a8f; }
+  .btn-salir {
+    background:#8b2c3c; border:1px solid #ff7788; color:#ffd9df; padding:0.4rem 1rem;
+    border-radius:2rem; font-size:0.85rem; cursor:pointer; font-weight:600;
+    transition:all 0.15s; box-shadow:0 3px 0 #4a1420;
+  }
+  .btn-salir:hover { background:#c0394f; color:white; transform:translateY(-1px); }
+  .sync-info { text-align:center; font-size:0.82rem; color:#7ea8c0; margin-bottom:0.6rem; min-height:1.2rem; }
+  .sync-ok { color:#4effb0; }
+  .sync-error { color:#ff8899; }
+
+  .tabs { display:flex; justify-content:center; gap:0.7rem; margin-bottom:1.8rem; flex-wrap:wrap; }
+  .tab-btn {
+    background: rgba(10,30,45,0.8); border:1px solid #2d6a8f; color:#b8e2ff;
+    padding:0.7rem 1.4rem; border-radius:3rem; font-weight:600; font-size:0.95rem;
+    cursor:pointer; transition:all 0.2s ease; box-shadow:0 5px 0 #0f1e2b; backdrop-filter:blur(4px);
+  }
+  .tab-btn:hover { background:#1e4a66; color:white; border-color:#00e0ff; transform:translateY(-2px); box-shadow:0 7px 0 #0a1822,0 0 15px #00b7ff; }
+  .tab-btn.active { background:#00b7ff; color:#02141f; border-color:#8ef0ff; box-shadow:0 5px 0 #00668b,0 0 25px #00c8ff; transform:translateY(1px); font-weight:700; }
+
+  .panel { display:none; animation:fadeIn 0.3s ease; }
+  .panel.active { display:block; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  .flashcard-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.3rem; margin-top:0.5rem; }
+  .flashcard { perspective:1500px; height:210px; cursor:pointer; }
+  .flashcard-inner { position:relative; width:100%; height:100%; transition:transform 0.6s cubic-bezier(0.23,1,0.32,1); transform-style:preserve-3d; border-radius:1.8rem; }
+  .flashcard.flipped .flashcard-inner { transform:rotateY(180deg); }
+  .flashcard-front, .flashcard-back {
+    position:absolute; width:100%; height:100%; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    border-radius:1.8rem; padding:1.3rem; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+    box-shadow:0 15px 25px -8px rgba(0,0,0,0.6); border:1px solid #4fb0e0;
+  }
+  .flashcard-front { background:linear-gradient(145deg,#132c3d,#0c1e2b); color:#ccf0ff; }
+  .flashcard-back { background:linear-gradient(145deg,#0e2a3a,#123d52); color:#e2f3ff; transform:rotateY(180deg); border-color:#8ef0ff; font-size:0.92rem; overflow-y:auto; }
+  .flashcard-front h3 { font-size:1.4rem; font-weight:600; color:#8ef0ff; text-shadow:0 0 8px #00b7ff; margin-bottom:0.4rem; }
+  .flashcard-front p { color:#9ac7e0; font-size:0.9rem; }
+  .flashcard-back p { font-size:0.95rem; line-height:1.45; color:#d4f0ff; }
+  .flashcard-back strong { color:#fff; }
+  .hint { margin-top:1rem; font-size:0.8rem; color:#7ea8c0; font-style:italic; text-align:center; }
+
+  .quiz-container { background:rgba(8,25,35,0.85); border-radius:2rem; padding:1.8rem 2rem; border:1px solid #2d7090; margin-bottom:1rem; }
+  .question { font-size:1.25rem; font-weight:600; color:#e2f3ff; margin-bottom:1.5rem; line-height:1.4; border-left:5px solid #00b7ff; padding-left:1.2rem; }
+  .options { display:flex; flex-direction:column; gap:0.8rem; margin-bottom:1.5rem; }
+  .option { background:#1c3f53; border:1px solid #3a7a9b; padding:0.9rem 1.3rem; border-radius:3rem; font-size:1rem; color:#d0ebff; cursor:pointer; transition:all 0.15s; font-weight:500; }
+  .option:hover { background:#26647e; border-color:#8ef0ff; transform:scale(1.01); }
+  .option.correct { background:#0a7e5c; border-color:#4effb0; color:#fff; box-shadow:0 0 20px #00ffaa; pointer-events:none; }
+  .option.incorrect { background:#8b2c3c; border-color:#ff7788; color:#fff; pointer-events:none; opacity:0.85; }
+  .quiz-feedback { margin-top:1rem; font-size:1rem; font-weight:500; padding:0.7rem 1.1rem; border-radius:2rem; background:rgba(0,200,255,0.1); border-left:6px solid #00e0ff; color:#c2edff; }
+  .quiz-nav { display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; flex-wrap:wrap; gap:0.8rem; }
+  .btn {
+    background:#1f526b; border:none; padding:0.7rem 1.6rem; border-radius:3rem; font-weight:600; font-size:0.95rem; color:#d9f2ff;
+    cursor:pointer; transition:all 0.15s; border:1px solid #4796b9; box-shadow:0 4px 0 #0e2b39;
+  }
+  .btn:hover:not(:disabled) { background:#2e7192; color:white; border-color:#aaeaff; transform:translateY(-2px); box-shadow:0 6px 0 #0e2b39,0 0 15px #00b7ff; }
+  .btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .btn-primary { background:#0077be; border-color:#8ef0ff; color:white; box-shadow:0 4px 0 #004466; }
+  .btn-primary:hover:not(:disabled) { background:#0099ee; }
+  .btn-finalizar { background:#0a7e5c; border-color:#4effb0; color:white; box-shadow:0 4px 0 #054a36; }
+  .btn-finalizar:hover:not(:disabled) { background:#12a878; }
+  .progress { font-weight:600; color:#b8e2ff; background:#0d2938; padding:0.4rem 1.2rem; border-radius:3rem; border:1px solid #2d7090; font-size:0.9rem; }
+
+  .resumen-final {
+    background:rgba(10,60,45,0.6); border:2px solid #4effb0; border-radius:2rem;
+    padding:2rem; text-align:center; color:#d4ffe9; margin-top:1rem;
+  }
+  .resumen-final h2 { color:#4effb0; font-size:1.8rem; margin-bottom:1rem; }
+  .resumen-final .numero { font-size:3rem; font-weight:800; color:#8ef0ff; text-shadow:0 0 20px #00ffaa; }
+  .resumen-final p { font-size:1.1rem; margin:0.5rem 0; }
+  .resumen-actions { display:flex; justify-content:center; gap:1rem; margin-top:1.5rem; flex-wrap:wrap; }
+
+  .teoria-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.3rem; }
+  .teoria-card {
+    background:rgba(12,35,48,0.92); border-left:6px solid #00b7ff; border-radius:1.4rem; padding:1.4rem 1.3rem;
+    box-shadow:0 10px 20px -5px rgba(0,0,0,0.6); border:1px solid #256080; transition:0.2s;
+  }
+  .teoria-card:hover { transform:translateY(-4px); border-color:#8ef0ff; box-shadow:0 15px 25px -5px #003b55; }
+  .teoria-card h3 { color:#8ef0ff; font-size:1.15rem; margin-bottom:0.6rem; border-bottom:1px solid #2d6a8f; padding-bottom:0.4rem; }
+  .teoria-card p, .teoria-card ul { color:#c2dcee; font-size:0.9rem; line-height:1.5; margin-bottom:0.5rem; }
+  .teoria-card ul { padding-left:1.1rem; }
+  .teoria-card li { margin-bottom:0.3rem; }
+  .teoria-card strong { color:#fff; }
+  .teoria-card .destacado { color:#8ef0ff; font-weight:600; }
+
+  .login-box { display:flex; flex-direction:column; gap:1rem; max-width:400px; margin:2rem auto; align-items:center; }
+  .login-box input {
+    width:100%; padding:0.9rem 1.2rem; border-radius:3rem; border:1px solid #2d6a8f;
+    background:#0e2a3a; color:white; font-size:1rem; outline:none;
+  }
+  .login-box input:focus { border-color:#8ef0ff; box-shadow:0 0 10px #00b7ff; }
+  .login-box button { width:100%; }
+  .error-msg { color:#ff8899; font-weight:600; text-align:center; }
+
+  .tabla-alumnos { width:100%; border-collapse:collapse; margin-top:1rem; font-size:0.9rem; }
+  .tabla-alumnos th, .tabla-alumnos td { padding:0.7rem 0.8rem; text-align:left; border-bottom:1px solid #2d6a8f; color:#c2dcee; }
+  .tabla-alumnos th { color:#8ef0ff; font-weight:700; background:#0a2d3d; }
+  .tabla-alumnos tr:hover td { background:rgba(0,183,255,0.08); }
+  .badge { display:inline-block; padding:0.2rem 0.7rem; border-radius:2rem; font-size:0.8rem; font-weight:700; }
+  .badge-ok { background:#0a7e5c; color:#b0ffd9; }
+  .badge-ko { background:#8b2c3c; color:#ffc2cc; }
+  .badge-pending { background:#5a5a2d; color:#ffffb0; }
+  .profesor-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem; }
+  .profesor-header h2 { color:#a5f0ff; font-size:1.5rem; }
+  .profesor-actions { display:flex; gap:0.7rem; flex-wrap:wrap; }
+
+  @media (max-width:600px) {
+    .app-container { padding:1.3rem 0.9rem; }
+    h1 { font-size:1.6rem; }
+    .question { font-size:1.1rem; }
+    .flashcard { height:230px; }
+    .quiz-container { padding:1.1rem; }
+    .teoria-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app-container" id="app">
+  <div id="loginScreen">
+    <h1>🛡️ Ciberseguridad 2º ESO</h1>
+    <div class="subtitle">Introduce tu nombre y apellido para comenzar</div>
+    <div class="login-box">
+      <input type="text" id="nombreInput" placeholder="Nombre" autocomplete="off">
+      <input type="text" id="apellidoInput" placeholder="Apellido" autocomplete="off">
+      <button class="btn btn-primary" id="entrarBtn">Entrar como alumno</button>
+      <button class="btn" id="irProfesorBtn" style="font-size:0.85rem;">🔐 Acceso profesor</button>
+      <div class="error-msg" id="loginError"></div>
+    </div>
+  </div>
+
+  <div id="appMain" style="display:none;">
+    <h1>🛡️ Ciberseguridad 2º ESO</h1>
+    <div class="subtitle">Repasa los conceptos del Tema 9</div>
+    <div class="user-info">
+      <span>Alumno: <strong id="nombreAlumno"></strong></span>
+      <button class="btn-salir" id="salirAlumnoBtn">🚪 Salir y guardar</button>
+    </div>
+    <div class="sync-info" id="syncInfo"></div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="teoria">📖 Teoría</button>
+      <button class="tab-btn" data-tab="flashcards">📇 Tarjetas</button>
+      <button class="tab-btn" data-tab="quiz">❓ Cuestionario</button>
+    </div>
+
+    <div id="teoria" class="panel active">
+      <div class="teoria-grid" id="teoriaGrid"></div>
+    </div>
+
+    <div id="flashcards" class="panel">
+      <div class="flashcard-grid" id="flashcardGrid"></div>
+      <p class="hint">Haz clic en cada tarjeta para ver la respuesta</p>
+    </div>
+
+    <div id="quiz" class="panel">
+      <div class="quiz-container" id="quizContainer">
+        <div class="question" id="questionText">Cargando…</div>
+        <div class="options" id="optionsContainer"></div>
+        <div class="quiz-feedback" id="feedback"></div>
+        <div class="quiz-nav">
+          <button class="btn" id="prevBtn" disabled>← Anterior</button>
+          <span class="progress" id="progressText">1 / 15</span>
+          <button class="btn btn-primary" id="nextBtn">Siguiente →</button>
+        </div>
+      </div>
+      <div id="resumenFinal" class="resumen-final" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div id="profesorScreen" style="display:none;">
+    <div id="profesorLogin">
+      <h1>🔐 Panel del Profesor</h1>
+      <div class="subtitle">Introduce la contraseña para acceder</div>
+      <div class="login-box">
+        <input type="password" id="passInput" placeholder="Contraseña">
+        <button class="btn btn-primary" id="accederProfesorBtn">Acceder</button>
+        <button class="btn" id="volverAlumnoBtn">← Volver</button>
+        <div class="error-msg" id="passError"></div>
+      </div>
+    </div>
+    <div id="profesorPanel" style="display:none;">
+      <div class="profesor-header">
+        <h2>📊 Seguimiento de alumnos (Google Sheets)</h2>
+        <div class="profesor-actions">
+          <button class="btn" id="refrescarBtn">🔄 Refrescar</button>
+          <button class="btn" id="salirProfesorBtn">🚪 Salir</button>
+        </div>
+      </div>
+      <div id="profesorCargando" style="color:#8ef0ff; text-align:center; padding:2rem; display:none;">⏳ Cargando datos desde Google Sheets…</div>
+      <div style="overflow-x:auto;">
+        <table class="tabla-alumnos">
+          <thead>
+            <tr>
+              <th>#</th><th>Nombre</th><th>Apellido</th>
+              <th>Flashcards</th><th>Aciertos</th><th>Intentos</th>
+              <th>% Quiz</th><th>Última actividad</th><th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tablaAlumnosBody"></tbody>
+        </table>
+      </div>
+      <p style="color:#7ea8c0; font-size:0.85rem; margin-top:1rem;">
+        Datos leídos en tiempo real de Google Sheets (JSONP).
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ============================================================
+  // ⚙️ CONFIGURACIÓN — URL CORRECTA (/exec)
+  // ============================================================
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyRxo_4bSQljh864RhFClZ2gvvV4roSkCyT3wgZIbEzkJQvXrUbJHCXNgzll2ZQqhT2/exec';
+  const PROFESOR_PASS = '1111';
+
+  // ============================================================
+  // DATOS
+  // ============================================================
+  const teoriaData = [
+    { titulo: '🔒 Seguridad activa', contenido: `<p>Medidas para <strong>prevenir y detectar</strong> amenazas antes de que causen daño.</p><ul><li><strong>Actualización de software</strong></li><li><strong>Antivirus</strong></li><li><strong>Firewalls</strong></li><li><strong>Monitoreo continuo</strong></li></ul>` },
+    { titulo: '🛟 Seguridad pasiva', contenido: `<p>Medidas que <strong>minimizan el daño</strong> si ocurre un ataque.</p><ul><li><strong>Copias de seguridad</strong></li><li><strong>Cifrado de datos</strong></li><li><strong>Contraseñas seguras</strong></li><li><strong>Planes de respuesta</strong></li></ul>` },
+    { titulo: '⚠️ Peligros en Internet', contenido: `<ul><li><strong>Ciberacoso</strong></li><li><strong>Grooming</strong></li><li><strong>Phishing</strong></li><li><strong>Contenido inapropiado</strong></li><li><strong>Adicción a Internet</strong></li></ul>` },
+    { titulo: '📱 Interacción en plataformas', contenido: `<p>Buenas prácticas:</p><ul><li>Respeto</li><li>No compartir datos sensibles</li><li>Verificar fuentes</li><li>No difundir rumores</li><li>Reflexionar antes de publicar</li></ul>` },
+    { titulo: '©️ Propiedad intelectual', contenido: `<ul><li><strong>Derechos de autor</strong></li><li><strong>Propiedad industrial</strong></li></ul><p>Violaciones: piratería, plagio, uso sin permiso.</p>` },
+    { titulo: '🛡️ Firewall', contenido: `<p>Barrera de seguridad que controla el tráfico de red y bloquea accesos no autorizados.</p>` },
+    { titulo: '🧠 Exposición de usuarios', contenido: `<p>Información personal que compartimos en línea. Fuentes: redes sociales, foros, compras, apps.</p>` },
+    { titulo: '✅ Buenas prácticas', contenido: `<ul><li>Configurar privacidad</li><li>No confiar en desconocidos</li><li>Verificar enlaces</li><li>Hablar con adultos</li><li>Equilibrar tiempo online/offline</li></ul>` }
+  ];
+
+  const flashcardsData = [
+    { front: 'Seguridad activa', hint: '¿Qué es?', back: '<strong>Prevenir y detectar amenazas antes de que causen daño.</strong> Ej: actualizaciones, antivirus, firewalls.' },
+    { front: 'Seguridad pasiva', hint: '¿Qué es?', back: '<strong>Minimiza el daño después de un ataque.</strong> Ej: copias de seguridad, cifrado, contraseñas seguras.' },
+    { front: 'Phishing', hint: '¿En qué consiste?', back: '<strong>Engaño</strong> para que reveles datos personales haciéndose pasar por una entidad legítima.' },
+    { front: 'Grooming', hint: '¿Qué es?', back: 'Un adulto se gana la confianza de un menor a través de Internet con fines de explotación sexual.' },
+    { front: 'Ciberacoso', hint: 'Definición', back: 'Uso de medios digitales para acosar, amenazar o humillar a otra persona.' },
+    { front: 'Propiedad intelectual', hint: '¿Qué protege?', back: 'Creaciones de la mente: derechos de autor y propiedad industrial.' },
+    { front: 'Firewall', hint: '¿Qué función tiene?', back: 'Barrera de seguridad que controla el tráfico de red y bloquea accesos no autorizados.' },
+    { front: 'Buenas prácticas en redes', hint: 'Nombra 3', back: 'Respeto, no compartir datos sensibles, verificar fuentes, configurar privacidad.' },
+    { front: 'Exposición de usuarios', hint: '¿Qué es?', back: 'Cantidad de información personal que compartimos en línea.' },
+    { front: 'Contraseñas seguras', hint: 'Características', back: 'Largas, con mayúsculas, minúsculas, números y símbolos. No reutilizar. Es <strong>seguridad pasiva</strong>.' },
+    { front: 'Plagio', hint: '¿Qué es?', back: 'Copiar y presentar el trabajo de otra persona como propio sin dar crédito.' },
+    { front: 'Adicción a Internet', hint: 'Consecuencias', back: 'Afecta al rendimiento académico, relaciones personales y salud mental.' }
+  ];
+
+  const questionsData = [
+    { question: '¿Cuál de estas medidas pertenece a la seguridad ACTIVA?', options: ['Realizar copias de seguridad periódicas.', 'Instalar y actualizar un antivirus.', 'Cifrar los datos del disco duro.', 'Tener un plan de respuesta a incidentes.'], correct: 1, explanation: 'La seguridad activa previene y detecta amenazas. El antivirus es un ejemplo.' },
+    { question: '¿Qué es el "phishing"?', options: ['Un tipo de virus.', 'Una técnica para engañar y robar datos personales haciéndose pasar por una entidad legítima.', 'El acoso entre menores.', 'Un programa para acelerar la conexión.'], correct: 1, explanation: 'El phishing es ingeniería social para que reveles contraseñas o datos bancarios.' },
+    { question: '¿Cuál de estos NO es un peligro típico en Internet?', options: ['Ciberacoso', 'Grooming', 'Phishing', 'Actualización automática del sistema'], correct: 3, explanation: 'La actualización automática es una medida de seguridad, no un peligro.' },
+    { question: 'La propiedad intelectual incluye dos categorías. ¿Cuáles?', options: ['Derechos de autor y propiedad industrial.', 'Patentes y marcas.', 'Software libre y privativo.', 'Derechos morales y económicos.'], correct: 0, explanation: 'Se divide en derechos de autor y propiedad industrial.' },
+    { question: '¿Qué es el "grooming"?', options: ['Mejorar contraseñas.', 'Acosar en redes.', 'Un adulto se gana la confianza de un menor con fines de explotación sexual.', 'Un firewall avanzado.'], correct: 2, explanation: 'El grooming es una forma de abuso: el adulto manipula al menor.' },
+    { question: '¿Cuál NO es una buena práctica en plataformas virtuales?', options: ['Configurar la privacidad.', 'Compartir rumores interesantes.', 'Reflexionar antes de publicar.', 'No compartir datos sensibles.'], correct: 1, explanation: 'Difundir rumores no verificados puede dañar la reputación.' },
+    { question: '¿Qué es un firewall?', options: ['Un antivirus.', 'Una barrera que controla el tráfico de red.', 'Una copia de seguridad.', 'Un tipo de contraseña.'], correct: 1, explanation: 'El firewall decide qué tráfico entra o sale de la red.' },
+    { question: '¿Cuál es una violación de la propiedad intelectual?', options: ['Descargar de plataforma de pago.', 'Usar imagen sin permiso ni licencia.', 'Crear obra original.', 'Citar correctamente.'], correct: 1, explanation: 'Usar imágenes sin permiso ni licencia es una violación.' },
+    { question: '¿Qué es la "exposición de los usuarios"?', options: ['Información personal que compartimos en línea.', 'Tiempo conectados.', 'Velocidad de conexión.', 'Número de dispositivos.'], correct: 0, explanation: 'Incluye datos básicos y detalles sensibles.' },
+    { question: '¿Cuál es de seguridad PASIVA?', options: ['Configurar firewall.', 'Actualizar sistema.', 'Realizar copias de seguridad.', 'Instalar antivirus.'], correct: 2, explanation: 'Las copias minimizan el daño después de un ataque.' },
+    { question: '¿Qué es el "ciberacoso"?', options: ['Robar contraseñas.', 'Acosar, amenazar o humillar mediante medios digitales.', 'Software malicioso.', 'Proteger la privacidad.'], correct: 1, explanation: 'Incluye mensajes ofensivos, rumores o publicar info sin consentimiento.' },
+    { question: '¿Cuál NO es una plataforma virtual?', options: ['WhatsApp', 'Instagram', 'Google Classroom', 'Microsoft Word'], correct: 3, explanation: 'Word es un procesador de textos, no una plataforma de interacción.' },
+    { question: '¿Qué hace un firewall?', options: ['Elimina virus.', 'Controla el tráfico de red y bloquea accesos no autorizados.', 'Hace copias automáticas.', 'Cifra datos.'], correct: 1, explanation: 'Es una barrera de seguridad de red.' },
+    { question: '¿Qué es el "plagio"?', options: ['Descargar música.', 'Copiar y presentar trabajo ajeno como propio sin crédito.', 'Usar contraseña segura.', 'Configurar privacidad.'], correct: 1, explanation: 'Es una violación de la propiedad intelectual.' },
+    { question: '¿Cuál es correcta sobre seguridad pasiva?', options: ['Previene ataques.', 'Minimiza el daño si ocurre un ataque.', 'Solo detecta virus.', 'Es igual que la activa.'], correct: 1, explanation: 'No previene directamente, pero reduce el impacto.' }
+  ];
+
+  // ============================================================
+  // ESTADO
+  // ============================================================
+  let alumnoActual = null;
+  let currentQuestionIndex = 0;
+  let answers = new Array(questionsData.length).fill(null);
+  let flashcardsVistasSet = new Set();
+  let yaFinalizado = false;
+
+  // ============================================================
+  // DOM
+  // ============================================================
+  const loginScreen = document.getElementById('loginScreen');
+  const appMain = document.getElementById('appMain');
+  const profesorScreen = document.getElementById('profesorScreen');
+  const profesorLogin = document.getElementById('profesorLogin');
+  const profesorPanel = document.getElementById('profesorPanel');
+
+  const nombreInput = document.getElementById('nombreInput');
+  const apellidoInput = document.getElementById('apellidoInput');
+  const entrarBtn = document.getElementById('entrarBtn');
+  const irProfesorBtn = document.getElementById('irProfesorBtn');
+  const loginError = document.getElementById('loginError');
+  const nombreAlumnoSpan = document.getElementById('nombreAlumno');
+  const syncInfo = document.getElementById('syncInfo');
+  const salirAlumnoBtn = document.getElementById('salirAlumnoBtn');
+
+  const passInput = document.getElementById('passInput');
+  const accederProfesorBtn = document.getElementById('accederProfesorBtn');
+  const volverAlumnoBtn = document.getElementById('volverAlumnoBtn');
+  const passError = document.getElementById('passError');
+  const salirProfesorBtn = document.getElementById('salirProfesorBtn');
+  const refrescarBtn = document.getElementById('refrescarBtn');
+  const tablaAlumnosBody = document.getElementById('tablaAlumnosBody');
+  const profesorCargando = document.getElementById('profesorCargando');
+
+  const questionText = document.getElementById('questionText');
+  const optionsContainer = document.getElementById('optionsContainer');
+  const feedbackDiv = document.getElementById('feedback');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressText = document.getElementById('progressText');
+  const quizContainer = document.getElementById('quizContainer');
+  const resumenFinal = document.getElementById('resumenFinal');
+
+  // ============================================================
+  // SINCRONIZACIÓN
+  // ============================================================
+  function mostrarSync(mensaje, tipo) {
+    syncInfo.textContent = mensaje;
+    syncInfo.className = 'sync-info ' + (tipo === 'ok' ? 'sync-ok' : tipo === 'error' ? 'sync-error' : '');
+    if (mensaje) {
+      clearTimeout(mostrarSync._t);
+      mostrarSync._t = setTimeout(() => { syncInfo.textContent = ''; syncInfo.className = 'sync-info'; }, 4000);
+    }
+  }
+
+  async function enviarAlServidor(alumno) {
+    if (!API_URL || API_URL.indexOf('PEGA_AQUI') !== -1) return;
+    mostrarSync('⏳ Guardando…', '');
+    try {
+      const payload = {
+        nombre: alumno.nombre,
+        apellido: alumno.apellido,
+        flashcardsVistas: alumno.flashcardsVistas || 0,
+        quizAciertos: alumno.quizAciertos || 0,
+        quizIntentos: alumno.quizIntentos || 0,
+        contestadas: alumno.contestadas || {}
+      };
+      await fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      mostrarSync('✅ Guardado en Google Sheets', 'ok');
+    } catch (err) {
+      console.warn('Error al enviar:', err);
+      mostrarSync('❌ No se pudo guardar.', 'error');
+    }
+  }
+
+  function actualizarAlumnoLocal(cambios) {
+    if (!alumnoActual) return;
+    alumnoActual = { ...alumnoActual, ...cambios, ultimaActividad: new Date().toISOString() };
+    enviarAlServidor(alumnoActual);
+  }
+
+  // ============================================================
+  // RENDER
+  // ============================================================
+  function renderTeoria() {
+    const grid = document.getElementById('teoriaGrid');
+    grid.innerHTML = teoriaData.map(t => `
+      <div class="teoria-card">
+        <h3>${t.titulo}</h3>
+        ${t.contenido}
+      </div>
+    `).join('');
+  }
+
+  function renderFlashcards() {
+    const grid = document.getElementById('flashcardGrid');
+    grid.innerHTML = '';
+    flashcardsData.forEach((fc, idx) => {
+      const card = document.createElement('div');
+      card.className = 'flashcard';
+      card.dataset.idx = idx;
+      card.innerHTML = `
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <h3>${fc.front}</h3>
+            <p>${fc.hint}</p>
+          </div>
+          <div class="flashcard-back">
+            <p>${fc.back}</p>
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => {
+        card.classList.toggle('flipped');
+        if (card.classList.contains('flipped') && !flashcardsVistasSet.has(idx)) {
+          flashcardsVistasSet.add(idx);
+          if (alumnoActual) actualizarAlumnoLocal({ flashcardsVistas: flashcardsVistasSet.size });
+        }
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  function renderQuestion() {
+    const q = questionsData[currentQuestionIndex];
+    questionText.textContent = q.question;
+    optionsContainer.innerHTML = '';
+    feedbackDiv.textContent = '';
+
+    const savedAnswer = answers[currentQuestionIndex];
+
+    q.options.forEach((opt, idx) => {
+      const optionDiv = document.createElement('div');
+      optionDiv.className = 'option';
+      optionDiv.textContent = opt;
+
+      if (savedAnswer !== null) {
+        if (idx === q.correct) optionDiv.classList.add('correct');
+        else if (idx === savedAnswer) optionDiv.classList.add('incorrect');
+        optionDiv.style.pointerEvents = 'none';
+      } else {
+        optionDiv.addEventListener('click', () => selectOption(idx));
+      }
+      optionsContainer.appendChild(optionDiv);
+    });
+
+    if (savedAnswer !== null) {
+      const isCorrect = savedAnswer === q.correct;
+      feedbackDiv.textContent = isCorrect
+        ? '✅ ¡Correcto! ' + q.explanation
+        : '❌ Incorrecto. La respuesta correcta es: "' + q.options[q.correct] + '". ' + q.explanation;
+      feedbackDiv.style.borderLeftColor = isCorrect ? '#4effb0' : '#ff7788';
+    } else {
+      feedbackDiv.style.borderLeftColor = '#00e0ff';
+    }
+
+    prevBtn.disabled = currentQuestionIndex === 0;
+    nextBtn.textContent = currentQuestionIndex === questionsData.length - 1 ? '🏁 Finalizar' : 'Siguiente →';
+    nextBtn.className = currentQuestionIndex === questionsData.length - 1 ? 'btn btn-finalizar' : 'btn btn-primary';
+    progressText.textContent = `${currentQuestionIndex + 1} / ${questionsData.length}`;
+  }
+
+  function selectOption(idx) {
+    const q = questionsData[currentQuestionIndex];
+    if (answers[currentQuestionIndex] !== null) return;
+    answers[currentQuestionIndex] = idx;
+
+    const optionDivs = optionsContainer.querySelectorAll('.option');
+    optionDivs.forEach((div, i) => {
+      div.style.pointerEvents = 'none';
+      if (i === q.correct) div.classList.add('correct');
+      else if (i === idx) div.classList.add('incorrect');
+    });
+
+    const isCorrect = idx === q.correct;
+    feedbackDiv.textContent = isCorrect
+      ? '✅ ¡Correcto! ' + q.explanation
+      : '❌ Incorrecto. La respuesta correcta es: "' + q.options[q.correct] + '". ' + q.explanation;
+    feedbackDiv.style.borderLeftColor = isCorrect ? '#4effb0' : '#ff7788';
+
+    if (alumnoActual) {
+      const contestadas = { ...(alumnoActual.contestadas || {}) };
+      contestadas[currentQuestionIndex] = { seleccionada: idx, correcta: isCorrect };
+      let aciertos = 0, intentos = 0;
+      Object.values(contestadas).forEach(c => { intentos++; if (c.correcta) aciertos++; });
+      actualizarAlumnoLocal({ contestadas, quizAciertos: aciertos, quizIntentos: intentos });
+    }
+  }
+
+  function goToQuestion(index) {
+    if (index < 0 || index >= questionsData.length) return;
+    currentQuestionIndex = index;
+    renderQuestion();
+  }
+
+  // ============================================================
+  // FINALIZAR
+  // ============================================================
+  function finalizarQuiz() {
+    if (yaFinalizado) return;
+    yaFinalizado = true;
+
+    const contestadas = answers.filter(a => a !== null).length;
+    const aciertos = answers.reduce((acc, ans, idx) => acc + (ans === questionsData[idx].correct ? 1 : 0), 0);
+    const pct = contestadas > 0 ? Math.round((aciertos / contestadas) * 100) : 0;
+
+    if (alumnoActual) {
+      const contestadasObj = { ...(alumnoActual.contestadas || {}) };
+      let aciertosTotal = 0, intentosTotal = 0;
+      Object.values(contestadasObj).forEach(c => { intentosTotal++; if (c.correcta) aciertosTotal++; });
+      enviarAlServidor({ ...alumnoActual, quizAciertos: aciertosTotal, quizIntentos: intentosTotal });
+    }
+
+    quizContainer.style.display = 'none';
+    resumenFinal.style.display = 'block';
+    let mensaje, emoji;
+    if (pct >= 80) { mensaje = '¡Excelente! Dominas el tema.'; emoji = '🏆'; }
+    else if (pct >= 60) { mensaje = '¡Buen trabajo! Repasa lo fallado.'; emoji = '👍'; }
+    else if (pct >= 40) { mensaje = 'Vas por buen camino. Repasa la teoría.'; emoji = '📚'; }
+    else { mensaje = 'Necesitas repasar más. ¡Ánimo!'; emoji = '💪'; }
+
+    resumenFinal.innerHTML = `
+      <h2>${emoji} ¡Cuestionario finalizado!</h2>
+      <div class="numero">${pct}%</div>
+      <p><strong>${aciertos}</strong> aciertos de <strong>${contestadas}</strong> preguntas contestadas</p>
+      <p>${mensaje}</p>
+      <div class="resumen-actions">
+        <button class="btn btn-primary" id="reintentarBtn">🔄 Volver a intentarlo</button>
+        <button class="btn" id="volverTeoriaBtn">📖 Repasar teoría</button>
+        <button class="btn" id="salirFinalBtn" style="background:#8b2c3c; border-color:#ff7788;">🚪 Salir y guardar</button>
+      </div>
+    `;
+
+    document.getElementById('reintentarBtn').addEventListener('click', () => {
+      yaFinalizado = false;
+      currentQuestionIndex = 0;
+      answers = new Array(questionsData.length).fill(null);
+      quizContainer.style.display = 'block';
+      resumenFinal.style.display = 'none';
+      renderQuestion();
+    });
+    document.getElementById('volverTeoriaBtn').addEventListener('click', () => {
+      document.querySelector('.tab-btn[data-tab="teoria"]').click();
+    });
+    document.getElementById('salirFinalBtn').addEventListener('click', salirAlumno);
+  }
+
+  // ============================================================
+  // LOGIN / SALIR
+  // ============================================================
+  function entrarComoAlumno() {
+    const nombre = nombreInput.value.trim();
+    const apellido = apellidoInput.value.trim();
+    if (!nombre || !apellido) {
+      loginError.textContent = 'Debes introducir nombre y apellido.';
+      return;
+    }
+    loginError.textContent = '';
+    alumnoActual = {
+      nombre, apellido,
+      flashcardsVistas: 0,
+      quizAciertos: 0,
+      quizIntentos: 0,
+      ultimaActividad: new Date().toISOString(),
+      contestadas: {}
+    };
+    nombreAlumnoSpan.textContent = nombre + ' ' + apellido;
+    loginScreen.style.display = 'none';
+    appMain.style.display = 'block';
+    profesorScreen.style.display = 'none';
+
+    flashcardsVistasSet = new Set();
+    answers = new Array(questionsData.length).fill(null);
+    currentQuestionIndex = 0;
+    yaFinalizado = false;
+    quizContainer.style.display = 'block';
+    resumenFinal.style.display = 'none';
+    renderTeoria();
+    renderFlashcards();
+    renderQuestion();
+    enviarAlServidor(alumnoActual);
+  }
+
+  async function salirAlumno() {
+    if (!alumnoActual) {
+      loginScreen.style.display = 'block';
+      appMain.style.display = 'none';
+      return;
+    }
+    mostrarSync('⏳ Guardando antes de salir…', '');
+    try {
+      const contestadasObj = { ...(alumnoActual.contestadas || {}) };
+      let aciertosTotal = 0, intentosTotal = 0;
+      Object.values(contestadasObj).forEach(c => { intentosTotal++; if (c.correcta) aciertosTotal++; });
+      await fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: alumnoActual.nombre,
+          apellido: alumnoActual.apellido,
+          flashcardsVistas: alumnoActual.flashcardsVistas || 0,
+          quizAciertos: aciertosTotal,
+          quizIntentos: intentosTotal,
+          contestadas: contestadasObj
+        })
+      });
+    } catch (e) {
+      console.warn('Error al guardar al salir:', e);
+    }
+    alumnoActual = null;
+    flashcardsVistasSet = new Set();
+    answers = new Array(questionsData.length).fill(null);
+    currentQuestionIndex = 0;
+    yaFinalizado = false;
+    quizContainer.style.display = 'block';
+    resumenFinal.style.display = 'none';
+    nombreInput.value = '';
+    apellidoInput.value = '';
+    appMain.style.display = 'none';
+    loginScreen.style.display = 'block';
+    syncInfo.textContent = '';
+  }
+
+  // ============================================================
+  // EVENTOS
+  // ============================================================
+  entrarBtn.addEventListener('click', entrarComoAlumno);
+  nombreInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') apellidoInput.focus(); });
+  apellidoInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') entrarComoAlumno(); });
+  salirAlumnoBtn.addEventListener('click', salirAlumno);
+
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = {
+    teoria: document.getElementById('teoria'),
+    flashcards: document.getElementById('flashcards'),
+    quiz: document.getElementById('quiz')
+  };
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      Object.values(panels).forEach(p => p.classList.remove('active'));
+      panels[target].classList.add('active');
+    });
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentQuestionIndex > 0) goToQuestion(currentQuestionIndex - 1);
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if (currentQuestionIndex < questionsData.length - 1) {
+      goToQuestion(currentQuestionIndex + 1);
+    } else {
+      finalizarQuiz();
+    }
+  });
+
+  // ============================================================
+  // PANEL PROFESOR
+  // ============================================================
+  irProfesorBtn.addEventListener('click', () => {
+    loginScreen.style.display = 'none';
+    appMain.style.display = 'none';
+    profesorScreen.style.display = 'block';
+    profesorLogin.style.display = 'block';
+    profesorPanel.style.display = 'none';
+    passInput.value = '';
+    passError.textContent = '';
+  });
+
+  volverAlumnoBtn.addEventListener('click', () => {
+    profesorScreen.style.display = 'none';
+    if (alumnoActual) appMain.style.display = 'block';
+    else loginScreen.style.display = 'block';
+  });
+
+  accederProfesorBtn.addEventListener('click', () => {
+    if (passInput.value === PROFESOR_PASS) {
+      profesorLogin.style.display = 'none';
+      profesorPanel.style.display = 'block';
+      cargarAlumnosDesdeServidor();
+    } else {
+      passError.textContent = 'Contraseña incorrecta.';
+    }
+  });
+  passInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') accederProfesorBtn.click(); });
+
+  salirProfesorBtn.addEventListener('click', () => {
+    profesorScreen.style.display = 'none';
+    if (alumnoActual) appMain.style.display = 'block';
+    else loginScreen.style.display = 'block';
+  });
+
+  refrescarBtn.addEventListener('click', cargarAlumnosDesdeServidor);
+
+  // ============================================================
+  // CARGA CON JSONP
+  // ============================================================
+  function cargarAlumnosDesdeServidor() {
+    profesorCargando.style.display = 'block';
+    tablaAlumnosBody.innerHTML = '';
+
+    const callbackName = 'jsonpCb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+    let timeoutId = setTimeout(() => {
+      cleanup();
+      profesorCargando.style.display = 'none';
+      tablaAlumnosBody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#ff8899;">Tiempo de espera agotado. Revisa la URL y que el script tenga acceso "Cualquier persona".</td></tr>';
+    }, 15000);
+
+    function cleanup() {
+      clearTimeout(timeoutId);
+      if (window[callbackName]) delete window[callbackName];
+      const oldScript = document.getElementById(callbackName + '_script');
+      if (oldScript) oldScript.remove();
+    }
+
+    window[callbackName] = function(data) {
+      cleanup();
+      profesorCargando.style.display = 'none';
+      renderTablaProfesor(data);
+    };
+
+    const script = document.createElement('script');
+    script.id = callbackName + '_script';
+    script.src = API_URL + '?callback=' + callbackName + '&t=' + Date.now();
+    script.onerror = function() {
+      cleanup();
+      profesorCargando.style.display = 'none';
+      tablaAlumnosBody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#ff8899;">Error al cargar el script. Comprueba la URL y la implementación del Apps Script.</td></tr>';
+    };
+    document.body.appendChild(script);
+  }
+
+  function renderTablaProfesor(alumnos) {
+    if (!alumnos || alumnos.length === 0) {
+      tablaAlumnosBody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#7ea8c0;">No hay alumnos registrados todavía.</td></tr>';
+      return;
+    }
+    tablaAlumnosBody.innerHTML = alumnos.map((a, i) => {
+      const nombre = a.Nombre || a.nombre || '';
+      const apellido = a.Apellido || a.apellido || '';
+      const flash = Number(a.FlashcardsVistas || a.flashcardsVistas || 0);
+      const aciertos = Number(a.QuizAciertos || a.quizAciertos || 0);
+      const intentos = Number(a.QuizIntentos || a.quizIntentos || 0);
+      const pct = intentos > 0 ? Math.round((aciertos / intentos) * 100) : 0;
+      const fechaRaw = a.UltimaActividad || a.ultimaActividad;
+      const fecha = fechaRaw ? new Date(fechaRaw).toLocaleString('es-ES') : '—';
+
+      let estado, badgeClass;
+      if (intentos === 0 && flash === 0) { estado = 'Sin actividad'; badgeClass = 'badge-pending'; }
+      else if (pct >= 70) { estado = 'Buen progreso'; badgeClass = 'badge-ok'; }
+      else { estado = 'Necesita repaso'; badgeClass = 'badge-ko'; }
+
+      return `<tr>
+        <td>${i + 1}</td>
+        <td>${nombre}</td>
+        <td>${apellido}</td>
+        <td>${flash}</td>
+        <td>${aciertos}</td>
+        <td>${intentos}</td>
+        <td>${pct}%</td>
+        <td>${fecha}</td>
+        <td><span class="badge ${badgeClass}">${estado}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ============================================================
+  // INICIALIZACIÓN
+  // ============================================================
+  renderTeoria();
+  renderFlashcards();
+  renderQuestion();
+})();
+</script>
+</body>
+</html>
