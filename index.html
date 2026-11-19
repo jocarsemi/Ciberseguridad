@@ -130,6 +130,124 @@
   .profesor-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem; }
   .profesor-header h2 { color:#a5f0ff; font-size:1.5rem; }
   .profesor-actions { display:flex; gap:0.7rem; flex-wrap:wrap; }
+  .btn-prueba { background:#7b2cbf; border-color:#d4a5ff; color:white; box-shadow:0 4px 0 #3a0a5e; }
+  .btn-prueba:hover:not(:disabled) { background:#9d4edd; border-color:#e0c0ff; }
+
+  /* ============ MODO PIZARRA: PRUEBA EVALUABLE ============ */
+  #pruebaScreen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: radial-gradient(circle at 30% 20%, #0f2a3f 0%, #061220 80%);
+    display: none; flex-direction: column;
+    padding: 1.5rem 2rem; color: white;
+  }
+  .prueba-topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;
+  }
+  .prueba-info { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .prueba-badge {
+    background: linear-gradient(90deg, #7b2cbf, #c77dff);
+    color: white; font-weight: 800; padding: 0.4rem 1rem;
+    border-radius: 2rem; letter-spacing: 1px; font-size: 0.9rem;
+    box-shadow: 0 0 20px rgba(199,125,255,0.5);
+  }
+  .prueba-contador {
+    background: rgba(255,255,255,0.1); padding: 0.4rem 1rem;
+    border-radius: 2rem; font-weight: 700; color: #8ef0ff;
+    border: 1px solid rgba(0,255,255,0.3); font-size: 0.95rem;
+  }
+  .prueba-botones { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn-prueba-nav {
+    background: rgba(10,30,45,0.9); border: 1px solid #3a7a9b; color: #d9f2ff;
+    padding: 0.7rem 1.2rem; border-radius: 3rem; font-weight: 600; font-size: 1rem;
+    cursor: pointer; transition: all 0.15s; min-width: 48px;
+    box-shadow: 0 3px 0 #0e2b39;
+  }
+  .btn-prueba-nav:hover:not(:disabled) { background:#2e7192; color:white; border-color:#aaeaff; transform:translateY(-2px); }
+  .btn-prueba-nav:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-prueba-reveal { background:#0a7e5c; border-color:#4effb0; color:white; box-shadow:0 3px 0 #054a36; }
+  .btn-prueba-reveal:hover:not(:disabled) { background:#12a878; }
+  .btn-prueba-close { background:#8b2c3c; border-color:#ff7788; color:white; box-shadow:0 3px 0 #4a1420; }
+  .btn-prueba-close:hover { background:#c0394f; }
+
+  .prueba-progress {
+    height: 6px; background: rgba(255,255,255,0.08);
+    border-radius: 3px; overflow: hidden; margin-bottom: 1.5rem;
+  }
+  .prueba-progress-bar {
+    height: 100%; width: 5%;
+    background: linear-gradient(90deg, #00b7ff, #4effb0);
+    border-radius: 3px; transition: width 0.4s ease;
+    box-shadow: 0 0 10px #00ffaa;
+  }
+
+  .prueba-main {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; align-items: stretch;
+    max-width: 1100px; margin: 0 auto; width: 100%;
+  }
+  .prueba-numero {
+    color: #8ef0ff; font-weight: 700; font-size: 1.1rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 0.8rem; text-align: center;
+  }
+  .prueba-pregunta {
+    font-size: 2.2rem; font-weight: 700; line-height: 1.3;
+    color: white; text-align: center; margin-bottom: 2rem;
+    text-shadow: 0 0 20px rgba(0,183,255,0.3);
+  }
+  .prueba-opciones {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .prueba-opcion {
+    background: rgba(20,50,70,0.7); border: 2px solid #2d6a8f;
+    border-radius: 1.5rem; padding: 1.2rem 1.5rem;
+    font-size: 1.3rem; color: #d0ebff; font-weight: 500;
+    display: flex; align-items: center; gap: 1rem;
+    transition: all 0.2s;
+  }
+  .prueba-opcion .letra {
+    background: #00b7ff; color: #02141f; font-weight: 800;
+    width: 2.4rem; height: 2.4rem; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 1.2rem;
+  }
+  .prueba-opcion.correcta {
+    background: rgba(10,126,92,0.6); border-color: #4effb0;
+    box-shadow: 0 0 30px rgba(78,255,176,0.5);
+  }
+  .prueba-opcion.correcta .letra { background: #4effb0; color: #02141f; }
+
+  .prueba-respuesta {
+    background: rgba(10,60,45,0.5); border: 2px solid #4effb0;
+    border-radius: 1.5rem; padding: 1.5rem 2rem;
+    text-align: center;
+  }
+  .prueba-respuesta-label { color: #4effb0; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .prueba-respuesta-texto { color: white; font-weight: 700; font-size: 1.6rem; margin-bottom: 0.7rem; }
+  .prueba-explicacion { color: #b8e2ff; font-size: 1.05rem; line-height: 1.5; }
+
+  .prueba-footer {
+    text-align: center; color: #6a9ab8; font-size: 0.85rem;
+    margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px solid rgba(0,255,255,0.15);
+  }
+
+  .prueba-fin {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; flex: 1; text-align: center; gap: 1rem;
+  }
+  .prueba-fin h2 { font-size: 3rem; color: #4effb0; text-shadow: 0 0 30px #00ffaa; }
+  .prueba-fin p { font-size: 1.3rem; color: #b8e2ff; }
+
+  @media (max-width: 800px) {
+    .prueba-pregunta { font-size: 1.5rem; }
+    .prueba-opciones { grid-template-columns: 1fr; }
+    .prueba-opcion { font-size: 1.1rem; padding: 1rem; }
+    .prueba-respuesta-texto { font-size: 1.2rem; }
+    .prueba-fin h2 { font-size: 2rem; }
+  }
 
   @media (max-width:600px) {
     .app-container { padding:1.3rem 0.9rem; }
@@ -143,6 +261,8 @@
 </head>
 <body>
 <div class="app-container" id="app">
+
+  <!-- ============ LOGIN ALUMNO ============ -->
   <div id="loginScreen">
     <h1>🛡️ Ciberseguridad 2º ESO</h1>
     <div class="subtitle">Introduce tu nombre y apellido para comenzar</div>
@@ -155,6 +275,7 @@
     </div>
   </div>
 
+  <!-- ============ APP ALUMNO ============ -->
   <div id="appMain" style="display:none;">
     <h1>🛡️ Ciberseguridad 2º ESO</h1>
     <div class="subtitle">Repasa los conceptos del Tema 9</div>
@@ -194,6 +315,7 @@
     </div>
   </div>
 
+  <!-- ============ PANEL PROFESOR ============ -->
   <div id="profesorScreen" style="display:none;">
     <div id="profesorLogin">
       <h1>🔐 Panel del Profesor</h1>
@@ -210,6 +332,7 @@
         <h2>📊 Seguimiento de alumnos (Google Sheets)</h2>
         <div class="profesor-actions">
           <button class="btn" id="refrescarBtn">🔄 Refrescar</button>
+          <button class="btn btn-prueba" id="abrirPruebaBtn">🎯 Abrir prueba evaluable</button>
           <button class="btn" id="salirProfesorBtn">🚪 Salir</button>
         </div>
       </div>
@@ -231,18 +354,23 @@
       </p>
     </div>
   </div>
+
+  <!-- ============ MODO PIZARRA: PRUEBA EVALUABLE ============ -->
+  <div id="pruebaScreen">
+    <div id="pruebaContenido"></div>
+  </div>
 </div>
 
 <script>
 (function() {
   // ============================================================
-  // ⚙️ CONFIGURACIÓN — URL CORRECTA (/exec)
+  // CONFIGURACIÓN — URL correcta (/exec)
   // ============================================================
   const API_URL = 'https://script.google.com/macros/s/AKfycbyRxo_4bSQljh864RhFClZ2gvvV4roSkCyT3wgZIbEzkJQvXrUbJHCXNgzll2ZQqhT2/exec';
   const PROFESOR_PASS = '1111';
 
   // ============================================================
-  // DATOS
+  // DATOS: TEORÍA, FLASHCARDS, QUIZ
   // ============================================================
   const teoriaData = [
     { titulo: '🔒 Seguridad activa', contenido: `<p>Medidas para <strong>prevenir y detectar</strong> amenazas antes de que causen daño.</p><ul><li><strong>Actualización de software</strong></li><li><strong>Antivirus</strong></li><li><strong>Firewalls</strong></li><li><strong>Monitoreo continuo</strong></li></ul>` },
@@ -289,6 +417,32 @@
   ];
 
   // ============================================================
+  // DATOS: PRUEBA EVALUABLE (20 preguntas para pizarra)
+  // ============================================================
+  const pruebaData = [
+    { pregunta: '¿Qué diferencia hay entre seguridad activa y seguridad pasiva?', opciones: ['La activa previene y detecta; la pasiva minimiza el daño.', 'La activa es para virus; la pasiva para hackers.', 'Son lo mismo.', 'La activa es para redes; la pasiva para contraseñas.'], correcta: 0, explicacion: 'La seguridad activa previene y detecta amenazas antes de que causen daño. La pasiva minimiza el daño si ocurre un ataque.' },
+    { pregunta: '¿Cuál de estas es una medida de seguridad ACTIVA?', opciones: ['Hacer copias de seguridad', 'Instalar un antivirus y actualizarlo', 'Cifrar los datos', 'Tener un plan de respuesta'], correcta: 1, explicacion: 'El antivirus es seguridad activa porque previene y detecta. Las otras son pasivas.' },
+    { pregunta: '¿Cuál de estas es una medida de seguridad PASIVA?', opciones: ['Configurar un firewall', 'Actualizar el sistema operativo', 'Realizar copias de seguridad', 'Instalar un antivirus'], correcta: 2, explicacion: 'Las copias de seguridad minimizan el daño tras un ataque. Las demás son activas.' },
+    { pregunta: '¿Qué es un firewall?', opciones: ['Un antivirus', 'Una barrera que controla el tráfico de red', 'Una copia de seguridad', 'Un tipo de contraseña'], correcta: 1, explicacion: 'El firewall decide qué tráfico puede entrar o salir de la red privada.' },
+    { pregunta: '¿Qué es el phishing?', opciones: ['Un tipo de virus', 'Una técnica para engañar y robar datos personales haciéndose pasar por una entidad legítima', 'El acoso entre menores', 'Un programa para acelerar la conexión'], correcta: 1, explicacion: 'El phishing es ingeniería social para que reveles contraseñas o datos bancarios.' },
+    { pregunta: '¿Qué es el grooming?', opciones: ['Mejorar contraseñas', 'Acosar en redes', 'Un adulto se gana la confianza de un menor con fines de explotación sexual', 'Un firewall avanzado'], correcta: 2, explicacion: 'El grooming es una forma de abuso: el adulto manipula al menor mediante engaños y confianza.' },
+    { pregunta: '¿Qué es el ciberacoso?', opciones: ['Robar contraseñas', 'Acosar, amenazar o humillar mediante medios digitales', 'Un software malicioso', 'Proteger la privacidad'], correcta: 1, explicacion: 'Incluye mensajes ofensivos, difusión de rumores o publicar información sin consentimiento.' },
+    { pregunta: '¿Cuál de estos NO es un peligro típico en Internet?', opciones: ['Ciberacoso', 'Grooming', 'Phishing', 'Actualización automática del sistema'], correcta: 3, explicacion: 'La actualización automática es una medida de seguridad, no un peligro.' },
+    { pregunta: '¿Qué es la propiedad intelectual?', opciones: ['Las creaciones de la mente: derechos de autor y propiedad industrial', 'Los derechos sobre los ordenadores', 'El software libre', 'Las patentes de Internet'], correcta: 0, explicacion: 'Incluye derechos de autor (obras literarias, música, software) y propiedad industrial (patentes, marcas, diseños).' },
+    { pregunta: '¿Cuál es una violación de la propiedad intelectual?', opciones: ['Descargar de una plataforma de pago', 'Usar una imagen de Internet sin permiso ni licencia', 'Crear una obra original', 'Citar correctamente la fuente'], correcta: 1, explicacion: 'Usar imágenes, audios o vídeos sin permiso ni licencia es una violación. Hay que consultar las licencias.' },
+    { pregunta: '¿Qué es el plagio?', opciones: ['Descargar música', 'Copiar y presentar trabajo ajeno como propio sin crédito', 'Usar una contraseña segura', 'Configurar la privacidad'], correcta: 1, explicacion: 'El plagio es una violación de la propiedad intelectual. Siempre hay que citar las fuentes.' },
+    { pregunta: '¿Qué es la exposición de los usuarios?', opciones: ['La información personal que compartimos en línea', 'El tiempo conectados', 'La velocidad de conexión', 'El número de dispositivos'], correcta: 0, explicacion: 'Incluye datos básicos (nombre, edad) y detalles sensibles (ubicación, intereses, fotos, datos bancarios).' },
+    { pregunta: '¿Cuál es una buena práctica en redes sociales?', opciones: ['Compartir rumores interesantes', 'Configurar la privacidad y no compartir datos sensibles', 'Aceptar a todos los desconocidos', 'Publicar sin pensar'], correcta: 1, explicacion: 'Configurar la privacidad y no compartir datos sensibles es fundamental para proteger nuestra información.' },
+    { pregunta: '¿Qué contraseña es más segura?', opciones: ['1234', 'MiNombre2024', 'P@ssw0rd!2024#Segur@', 'password'], correcta: 2, explicacion: 'Una contraseña segura es larga, con mayúsculas, minúsculas, números y símbolos, y no debe ser una palabra común.' },
+    { pregunta: '¿Qué NO debes hacer si algo en Internet te hace sentir incómodo?', opciones: ['Hablar con un adulto de confianza', 'Guardar el mensaje como prueba', 'Ignorarlo y no contárselo a nadie', 'Bloquear al usuario'], correcta: 2, explicacion: 'Siempre hay que hablar con padres, profesores o adultos de confianza. Nunca ignorarlo en silencio.' },
+    { pregunta: '¿Qué es la adicción a Internet?', opciones: ['Un tipo de virus', 'El uso excesivo de Internet que afecta al rendimiento, relaciones y salud mental', 'Una buena práctica digital', 'Un firewall'], correcta: 1, explicacion: 'La adicción afecta negativamente al rendimiento académico, las relaciones personales y la salud mental.' },
+    { pregunta: '¿Cuál es el primer paso ante una brecha de seguridad?', opciones: ['Ignorarla', 'Identificar el problema y minimizar sus efectos', 'Culpar a otro', 'Apagar el ordenador'], correcta: 1, explicacion: 'Un plan de respuesta incluye identificar el problema, minimizar los efectos y comunicar a las partes afectadas.' },
+    { pregunta: '¿Qué significa que un dato esté "cifrado"?', opciones: ['Que está protegido y no se puede leer sin la clave', 'Que está borrado', 'Que es público', 'Que está comprimido'], correcta: 0, explicacion: 'El cifrado protege la información: aunque sea interceptada, no puede leerse sin la clave adecuada.' },
+    { pregunta: '¿Cuál de estas plataformas es una red social?', opciones: ['Google Classroom', 'Instagram', 'Microsoft Word', 'Windows'], correcta: 1, explicacion: 'Instagram es una red social. Classroom es educativa, Word es un procesador y Windows es un sistema operativo.' },
+    { pregunta: '¿Cuál es el mejor consejo para navegar seguro?', opciones: ['Usar siempre la misma contraseña', 'Compartir todos tus datos con desconocidos', 'Configurar privacidad, contraseñas seguras y mantener todo actualizado', 'Hacer clic en todos los enlaces'], correcta: 2, explicacion: 'Las tres claves son: contraseñas seguras, configurar bien la privacidad y mantener los dispositivos actualizados.' }
+  ];
+
+  // ============================================================
   // ESTADO
   // ============================================================
   let alumnoActual = null;
@@ -296,6 +450,8 @@
   let answers = new Array(questionsData.length).fill(null);
   let flashcardsVistasSet = new Set();
   let yaFinalizado = false;
+  let pruebaIndex = 0;
+  let pruebaRespuestaVisible = false;
 
   // ============================================================
   // DOM
@@ -321,6 +477,7 @@
   const passError = document.getElementById('passError');
   const salirProfesorBtn = document.getElementById('salirProfesorBtn');
   const refrescarBtn = document.getElementById('refrescarBtn');
+  const abrirPruebaBtn = document.getElementById('abrirPruebaBtn');
   const tablaAlumnosBody = document.getElementById('tablaAlumnosBody');
   const profesorCargando = document.getElementById('profesorCargando');
 
@@ -332,6 +489,9 @@
   const progressText = document.getElementById('progressText');
   const quizContainer = document.getElementById('quizContainer');
   const resumenFinal = document.getElementById('resumenFinal');
+
+  const pruebaScreen = document.getElementById('pruebaScreen');
+  const pruebaContenido = document.getElementById('pruebaContenido');
 
   // ============================================================
   // SINCRONIZACIÓN
@@ -377,7 +537,7 @@
   }
 
   // ============================================================
-  // RENDER
+  // RENDER TEORÍA Y FLASHCARDS
   // ============================================================
   function renderTeoria() {
     const grid = document.getElementById('teoriaGrid');
@@ -418,6 +578,9 @@
     });
   }
 
+  // ============================================================
+  // QUIZ DEL ALUMNO
+  // ============================================================
   function renderQuestion() {
     const q = questionsData[currentQuestionIndex];
     questionText.textContent = q.question;
@@ -490,9 +653,6 @@
     renderQuestion();
   }
 
-  // ============================================================
-  // FINALIZAR
-  // ============================================================
   function finalizarQuiz() {
     if (yaFinalizado) return;
     yaFinalizado = true;
@@ -543,7 +703,7 @@
   }
 
   // ============================================================
-  // LOGIN / SALIR
+  // LOGIN / SALIR ALUMNO
   // ============================================================
   function entrarComoAlumno() {
     const nombre = nombreInput.value.trim();
@@ -620,7 +780,125 @@
   }
 
   // ============================================================
-  // EVENTOS
+  // PRUEBA EVALUABLE (PIZARRA)
+  // ============================================================
+  function renderPrueba() {
+    const p = pruebaData[pruebaIndex];
+    const letras = ['A', 'B', 'C', 'D'];
+    pruebaRespuestaVisible = false;
+
+    pruebaContenido.innerHTML = `
+      <div class="prueba-topbar">
+        <div class="prueba-info">
+          <span class="prueba-badge">🎯 PRUEBA EVALUABLE</span>
+          <span class="prueba-contador">${pruebaIndex + 1} / ${pruebaData.length}</span>
+        </div>
+        <div class="prueba-botones">
+          <button class="btn-prueba-nav" id="pruebaPrevBtn" ${pruebaIndex === 0 ? 'disabled' : ''}>←</button>
+          <button class="btn-prueba-nav btn-prueba-reveal" id="pruebaRevealBtn">👁 Mostrar respuesta</button>
+          <button class="btn-prueba-nav" id="pruebaNextBtn" ${pruebaIndex === pruebaData.length - 1 ? 'disabled' : ''}>→</button>
+          <button class="btn-prueba-nav btn-prueba-close" id="pruebaCloseBtn">✕ Salir</button>
+        </div>
+      </div>
+      <div class="prueba-progress">
+        <div class="prueba-progress-bar" style="width:${((pruebaIndex + 1) / pruebaData.length) * 100}%"></div>
+      </div>
+      <div class="prueba-main">
+        <div class="prueba-numero">Pregunta ${pruebaIndex + 1}</div>
+        <div class="prueba-pregunta">${p.pregunta}</div>
+        <div class="prueba-opciones">
+          ${p.opciones.map((op, i) => `
+            <div class="prueba-opcion" data-idx="${i}">
+              <span class="letra">${letras[i]}</span>
+              <span>${op}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="prueba-respuesta" id="pruebaRespuesta" style="display:none;">
+          <div class="prueba-respuesta-label">✅ Respuesta correcta:</div>
+          <div class="prueba-respuesta-texto" id="pruebaRespuestaTexto"></div>
+          <div class="prueba-explicacion" id="pruebaExplicacion"></div>
+        </div>
+      </div>
+      <div class="prueba-footer">
+        Usa ← → para navegar · Espacio para mostrar/ocultar respuesta · Esc para salir
+      </div>
+    `;
+
+    document.getElementById('pruebaPrevBtn').addEventListener('click', pruebaAnterior);
+    document.getElementById('pruebaNextBtn').addEventListener('click', pruebaSiguiente);
+    document.getElementById('pruebaRevealBtn').addEventListener('click', revelarRespuesta);
+    document.getElementById('pruebaCloseBtn').addEventListener('click', cerrarPrueba);
+  }
+
+  function revelarRespuesta() {
+    const p = pruebaData[pruebaIndex];
+    const letras = ['A', 'B', 'C', 'D'];
+    pruebaRespuestaVisible = !pruebaRespuestaVisible;
+
+    const opcionesEls = pruebaContenido.querySelectorAll('.prueba-opcion');
+    if (pruebaRespuestaVisible) {
+      opcionesEls.forEach((div, i) => {
+        if (i === p.correcta) div.classList.add('correcta');
+      });
+      const respuestaEl = document.getElementById('pruebaRespuesta');
+      document.getElementById('pruebaRespuestaTexto').textContent = `${letras[p.correcta]}. ${p.opciones[p.correcta]}`;
+      document.getElementById('pruebaExplicacion').textContent = p.explicacion;
+      respuestaEl.style.display = 'block';
+      document.getElementById('pruebaRevealBtn').textContent = '🙈 Ocultar respuesta';
+    } else {
+      opcionesEls.forEach(div => div.classList.remove('correcta'));
+      document.getElementById('pruebaRespuesta').style.display = 'none';
+      document.getElementById('pruebaRevealBtn').textContent = '👁 Mostrar respuesta';
+    }
+  }
+
+  function pruebaSiguiente() {
+    if (pruebaIndex < pruebaData.length - 1) {
+      pruebaIndex++;
+      renderPrueba();
+    } else {
+      mostrarFinPrueba();
+    }
+  }
+
+  function pruebaAnterior() {
+    if (pruebaIndex > 0) {
+      pruebaIndex--;
+      renderPrueba();
+    }
+  }
+
+  function mostrarFinPrueba() {
+    pruebaContenido.innerHTML = `
+      <div class="prueba-fin">
+        <h2>🎉 ¡Prueba completada!</h2>
+        <p>Has repasado las ${pruebaData.length} preguntas del tema de Ciberseguridad.</p>
+        <div style="display:flex; gap:1rem; margin-top:2rem; flex-wrap:wrap; justify-content:center;">
+          <button class="btn btn-primary" id="pruebaReiniciarBtn" style="font-size:1.1rem; padding:1rem 2rem;">🔄 Reiniciar prueba</button>
+          <button class="btn" id="pruebaSalirBtn" style="font-size:1.1rem; padding:1rem 2rem; background:#8b2c3c; border-color:#ff7788;">🚪 Salir</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('pruebaReiniciarBtn').addEventListener('click', () => {
+      pruebaIndex = 0;
+      renderPrueba();
+    });
+    document.getElementById('pruebaSalirBtn').addEventListener('click', cerrarPrueba);
+  }
+
+  function abrirPrueba() {
+    pruebaScreen.style.display = 'flex';
+    pruebaIndex = 0;
+    renderPrueba();
+  }
+
+  function cerrarPrueba() {
+    pruebaScreen.style.display = 'none';
+  }
+
+  // ============================================================
+  // EVENTOS GENERALES
   // ============================================================
   entrarBtn.addEventListener('click', entrarComoAlumno);
   nombreInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') apellidoInput.focus(); });
@@ -692,9 +970,10 @@
   });
 
   refrescarBtn.addEventListener('click', cargarAlumnosDesdeServidor);
+  abrirPruebaBtn.addEventListener('click', abrirPrueba);
 
   // ============================================================
-  // CARGA CON JSONP
+  // CARGA DE ALUMNOS CON JSONP
   // ============================================================
   function cargarAlumnosDesdeServidor() {
     profesorCargando.style.display = 'block';
@@ -764,6 +1043,17 @@
       </tr>`;
     }).join('');
   }
+
+  // ============================================================
+  // TECLADO PARA LA PRUEBA (PIZARRA)
+  // ============================================================
+  document.addEventListener('keydown', (e) => {
+    if (pruebaScreen.style.display !== 'flex') return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); pruebaSiguiente(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); pruebaAnterior(); }
+    else if (e.key === ' ') { e.preventDefault(); revelarRespuesta(); }
+    else if (e.key === 'Escape') { cerrarPrueba(); }
+  });
 
   // ============================================================
   // INICIALIZACIÓN
