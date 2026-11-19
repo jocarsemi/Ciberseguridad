@@ -257,6 +257,9 @@
     .quiz-container { padding:1.1rem; }
     .teoria-grid { grid-template-columns:1fr; }
   }
+ /* ============ BOTÓN PRUEBA NIVEL ALTO ============ */
+.btn-prueba-alta { background:#b5179e; border-color:#ff9de2; color:white; box-shadow:0 4px 0 #5e0b50; }
+.btn-prueba-alta:hover:not(:disabled) { background:#d633b5; border-color:#ffb8ec; }
 </style>
 </head>
 <body>
@@ -333,6 +336,7 @@
         <div class="profesor-actions">
           <button class="btn" id="refrescarBtn">🔄 Refrescar</button>
           <button class="btn btn-prueba" id="abrirPruebaBtn">🎯 Abrir prueba evaluable</button>
+         <button class="btn btn-prueba-alta" id="abrirPruebaAltaBtn">🧠 Prueba nivel alto</button>
           <button class="btn" id="salirProfesorBtn">🚪 Salir</button>
         </div>
       </div>
@@ -442,6 +446,242 @@
     { pregunta: '¿Cuál es el mejor consejo para navegar seguro?', opciones: ['Usar siempre la misma contraseña', 'Compartir todos tus datos con desconocidos', 'Configurar privacidad, contraseñas seguras y mantener todo actualizado', 'Hacer clic en todos los enlaces'], correcta: 2, explicacion: 'Las tres claves son: contraseñas seguras, configurar bien la privacidad y mantener los dispositivos actualizados.' }
   ];
 
+ // ============================================================
+// PRUEBA EVALUABLE NIVEL ALTO (20 preguntas difíciles)
+// Respuestas de longitud similar y orden aleatorio
+// ============================================================
+const pruebaAltaData = [
+  {
+    pregunta: 'Un empleado recibe un correo de "soporte@micros0ft.com" pidiendo su contraseña para "verificar la cuenta". El dominio imita a Microsoft pero no es el oficial. ¿Qué tipo de ataque es y qué medida de seguridad activa lo detectaría mejor?',
+    opciones: [
+      'Phishing; un filtro antispam y la verificación del remitente lo detectarían.',
+      'Grooming; un firewall perimetral bloquearía la conexión automáticamente.',
+      'Ciberacoso; el cifrado del correo evitaría la suplantación del dominio.',
+      'Malware; el antivirus del equipo eliminaría el correo antes de abrirlo.'
+    ],
+    correcta: 0,
+    explicacion: 'El dominio falso y la petición de contraseña son phishing. La seguridad activa incluye filtros antispam y verificación del remitente. El firewall no analiza el contenido del correo y el cifrado no evita la suplantación.'
+  },
+  {
+    pregunta: 'Una empresa detecta que un atacante accedió a su red y robó datos. Ya ha cerrado la brecha. Según el tema, ¿qué medida de seguridad PASIVA se aplica AHORA para reducir el impacto?',
+    opciones: [
+      'Aplicar un plan de respuesta a incidentes y restaurar desde copias.',
+      'Instalar un firewall más potente en el perímetro de la red.',
+      'Actualizar todos los sistemas operativos a la última versión.',
+      'Configurar un antivirus con análisis heurístico avanzado.'
+    ],
+    correcta: 0,
+    explicacion: 'La seguridad pasiva actúa después del ataque: plan de respuesta, copias de seguridad, cifrado, etc. Las otras opciones son medidas activas de prevención.'
+  },
+  {
+    pregunta: 'Un alumno recibe en Instagram un mensaje de un "compañero" que le pide fotos íntimas y le dice que, si no las envía, publicará cosas suyas. El "compañero" es en realidad un adulto. ¿Qué delito se está cometiendo y qué debe hacer el alumno?',
+    opciones: [
+      'Grooming y sextorsión; debe hablar con un adulto y no enviar nada.',
+      'Phishing y suplantación; debe cambiar su contraseña de Instagram.',
+      'Ciberacoso leve; debe bloquear al usuario y seguir con su vida.',
+      'Malware y extorsión; debe instalar un antivirus en el móvil.'
+    ],
+    correcta: 0,
+    explicacion: 'Un adulto haciéndose pasar por menor y pidiendo fotos íntimas es grooming, agravado por sextorsión. Nunca debe enviar nada y debe contarlo a un adulto de confianza.'
+  },
+  {
+    pregunta: 'En una red doméstica, el router tiene el firewall activado y el ordenador tiene antivirus. ¿Qué capa de seguridad está protegiendo el tráfico de red y qué medida PASIVA falta en este escenario?',
+    opciones: [
+      'El firewall protege la red; falta una copia de seguridad de los datos.',
+      'El antivirus protege la red; falta actualizar el sistema operativo.',
+      'El firewall protege la red; falta instalar otro antivirus más potente.',
+      'El router protege la red; falta configurar contraseñas más seguras.'
+    ],
+    correcta: 0,
+    explicacion: 'El firewall controla el tráfico de red. En el escenario descrito no se menciona ninguna copia de seguridad, que es una medida pasiva fundamental.'
+  },
+  {
+    pregunta: 'Un compañero descarga una canción de una web que no es oficial y la usa en un trabajo de clase sin citar al autor. ¿Qué dos violaciones de propiedad intelectual se están produciendo?',
+    opciones: [
+      'Piratería por la descarga y plagio por no citar al autor.',
+      'Phishing por la descarga y ciberacoso por no citar al autor.',
+      'Grooming por la descarga y malware por no citar al autor.',
+      'Solo plagio; la descarga de una canción no es delito.'
+    ],
+    correcta: 0,
+    explicacion: 'Descargar de una fuente no autorizada es piratería. Usar la obra sin citar al autor es plagio. Ambas son violaciones de la propiedad intelectual.'
+  },
+  {
+    pregunta: 'Un atacante consigue el hash de una contraseña débil (por ejemplo, "1234") y la descifra rápidamente. ¿Qué medida de seguridad PASIVA habría dificultado más este ataque y por qué?',
+    opciones: [
+      'Usar una contraseña larga con mayúsculas, números y símbolos.',
+      'Instalar un firewall que bloquee las conexiones salientes.',
+      'Actualizar el sistema operativo cada semana sin excepción.',
+      'Configurar el navegador en modo incógnito permanente.'
+    ],
+    correcta: 0,
+    explicacion: 'Una contraseña fuerte (larga y variada) tarda muchísimo más en descifrarse aunque el hash se filtre. Las demás opciones no protegen directamente la contraseña.'
+  },
+  {
+    pregunta: 'Una empresa sufre un ransomware que cifra todos sus archivos. Tiene copias de seguridad diarias en un disco externo desconectado. ¿Por qué este escenario es un ejemplo de seguridad pasiva eficaz?',
+    opciones: [
+      'Porque las copias permiten restaurar los datos sin pagar el rescate.',
+      'Porque el disco externo bloquea el ransomware antes de ejecutarse.',
+      'Porque el cifrado de los archivos impide que el atacante los robe.',
+      'Porque el ransomware no puede afectar a discos externos nunca.'
+    ],
+    correcta: 0,
+    explicacion: 'La seguridad pasiva minimiza el daño. Las copias permiten recuperar la información sin ceder al chantaje. El disco externo no bloquea el ransomware por sí mismo.'
+  },
+  {
+    pregunta: 'Un alumno publica en TikTok un vídeo con la cara y el nombre completo de un compañero, sin su permiso, para burlarse de él. ¿Qué dos problemas de ciberseguridad se producen a la vez?',
+    opciones: [
+      'Ciberacoso y exposición de datos personales sin consentimiento.',
+      'Phishing y suplantación de identidad digital del compañero.',
+      'Grooming y malware en el dispositivo del compañero.',
+      'Solo exposición de datos; no hay acoso si es una broma.'
+    ],
+    correcta: 0,
+    explicacion: 'Publicar datos e imágenes sin consentimiento es exposición de datos personales. Si además es para burlarse, es ciberacoso. Nunca es "solo una broma".'
+  },
+  {
+    pregunta: 'Un firewall bloquea una conexión entrante no solicitada. ¿Qué tipo de seguridad es y qué riesgo está evitando principalmente?',
+    opciones: [
+      'Seguridad activa; evita accesos no autorizados desde la red.',
+      'Seguridad pasiva; evita la pérdida de datos ya almacenados.',
+      'Seguridad pasiva; cifra la información que sale del equipo.',
+      'Seguridad activa; elimina virus que ya están en el sistema.'
+    ],
+    correcta: 0,
+    explicacion: 'El firewall es seguridad activa: previene y detecta. Evita accesos no autorizados, no elimina virus ni cifra datos.'
+  },
+  {
+    pregunta: 'Un alumno usa la misma contraseña "Segura123" en el correo, en Instagram y en el banco. Un servicio filtra esa contraseña. ¿Qué riesgo inmediato corre y qué medida pasiva lo habría evitado?',
+    opciones: [
+      'Riesgo de credential stuffing; usar contraseñas distintas por servicio.',
+      'Riesgo de phishing; usar el mismo correo en todos los servicios.',
+      'Riesgo de grooming; no compartir la contraseña con nadie.',
+      'Riesgo de malware; instalar un antivirus en cada dispositivo.'
+    ],
+    correcta: 0,
+    explicacion: 'Reutilizar contraseñas permite que un solo filtrado comprometa todas las cuentas (credential stuffing). La medida pasiva es usar contraseñas únicas por servicio.'
+  },
+  {
+    pregunta: 'Un sitio web pide instalar una extensión del navegador para "mejorar la experiencia". La extensión pide permiso para leer todos los datos de todas las webs. ¿Qué señal de alerta es y qué buena práctica se debe aplicar?',
+    opciones: [
+      'Permisos excesivos; no instalar y verificar la fuente y las valoraciones.',
+      'Firewall insuficiente; desactivar el firewall y volver a intentarlo.',
+      'Phishing seguro; instalar y luego cambiar la contraseña por si acaso.',
+      'Cifrado débil; instalar la extensión y activar el cifrado del navegador.'
+    ],
+    correcta: 0,
+    explicacion: 'Una extensión que pide leer todos los datos de todas las webs es sospechosa. La buena práctica es no instalar, verificar la fuente y revisar las valoraciones.'
+  },
+  {
+    pregunta: 'Un alumno recibe un SMS que dice: "Tu paquete está retenido, paga 1,99€ aquí: bit.ly/xyz". ¿Qué técnica de ingeniería social se está usando y cuál es la respuesta correcta?',
+    opciones: [
+      'Smishing con enlace acortado; no hacer clic y verificar con la empresa real.',
+      'Phishing con dominio oficial; hacer clic y pagar rápidamente para no perder el paquete.',
+      'Grooming con enlace malicioso; responder al SMS para pedir más información.',
+      'Ciberacoso con enlace falso; reenviar el SMS a todos los contactos.'
+    ],
+    correcta: 0,
+    explicacion: 'Es smishing (phishing por SMS) con un enlace acortado que oculta el destino real. Nunca se debe hacer clic; hay que verificar con la empresa por canales oficiales.'
+  },
+  {
+    pregunta: 'En un centro educativo, un alumno accede a la cuenta de un profesor porque la contraseña era "profesor2024". ¿Qué fallo de seguridad pasiva se ha producido y qué consecuencia inmediata tiene?',
+    opciones: [
+      'Contraseña débil y predecible; acceso no autorizado a información privada.',
+      'Firewall mal configurado; el alumno puede instalar programas en el servidor.',
+      'Antivirus desactualizado; el alumno puede cifrar todos los archivos del centro.',
+      'Cifrado insuficiente; el alumno puede leer los correos sin dejar rastro.'
+    ],
+    correcta: 0,
+    explicacion: 'Una contraseña basada en el rol y el año es débil y predecible. El fallo es de seguridad pasiva (política de contraseñas) y permite acceso no autorizado.'
+  },
+  {
+    pregunta: 'Una web muestra el candado y "https://". ¿Significa eso que la web es 100% segura y que no puede ser phishing? ¿Por qué?',
+    opciones: [
+      'No; el candado solo indica conexión cifrada, no que el sitio sea legítimo.',
+      'Sí; el candado y https garantizan que la web es oficial y segura.',
+      'No; el candado indica que la web está libre de virus y malware.',
+      'Sí; solo las empresas oficiales pueden obtener un certificado https.'
+    ],
+    correcta: 0,
+    explicacion: 'El candado y https solo indican que la conexión está cifrada. Un sitio de phishing también puede tener https. Hay que verificar el dominio y la fuente.'
+  },
+  {
+    pregunta: 'Un alumno ve en un foro un enlace a un "generador de contraseñas" que pide escribir su contraseña actual para "mejorarla". ¿Qué está ocurriendo y qué principio de seguridad se está violando?',
+    opciones: [
+      'Phishing de credenciales; nunca se comparte la contraseña con terceros.',
+      'Cifrado débil; la contraseña se envía cifrada y no hay riesgo real.',
+      'Firewall insuficiente; el generador no puede acceder a la contraseña.',
+      'Seguridad activa; el generador analiza la contraseña y la mejora.'
+    ],
+    correcta: 0,
+    explicacion: 'Ningún servicio legítimo necesita tu contraseña actual. Es phishing de credenciales. El principio violado es no compartir contraseñas con terceros.'
+  },
+  {
+    pregunta: 'Una empresa hace copias de seguridad cada día, pero nunca las prueba restaurando. ¿Qué fallo de seguridad pasiva tiene y por qué es grave?',
+    opciones: [
+      'No verifica las copias; pueden estar corruptas y no servir en una emergencia.',
+      'No cifra las copias; cualquier persona puede leerlas sin permiso.',
+      'No usa firewall; las copias pueden ser atacadas por malware.',
+      'No actualiza el sistema; las copias se vuelven obsoletas solas.'
+    ],
+    correcta: 0,
+    explicacion: 'Una copia de seguridad no probada no garantiza que se pueda restaurar. Es un fallo de seguridad pasiva porque el plan de respuesta puede fallar en el momento crítico.'
+  },
+  {
+    pregunta: 'Un alumno encuentra un USB en el patio del instituto y lo conecta a su ordenador para ver qué contiene. ¿Qué riesgo corre y qué buena práctica debería haber aplicado?',
+    opciones: [
+      'Riesgo de malware; no conectar dispositivos desconocidos y avisar a un adulto.',
+      'Riesgo de phishing; el USB puede enviar correos falsos automáticamente.',
+      'Riesgo de grooming; el USB puede abrir chats con desconocidos.',
+      'Riesgo de ciberacoso; el USB puede publicar fotos sin permiso.'
+    ],
+    correcta: 0,
+    explicacion: 'Un USB desconocido puede contener malware (incluido ransomware). La buena práctica es no conectarlo y entregarlo a un adulto o a la persona responsable.'
+  },
+  {
+    pregunta: 'Un alumno usa una VPN gratuita para conectarse a una red wifi pública. ¿Qué mejora y qué riesgo sigue existiendo según el tema?',
+    opciones: [
+      'Mejora el cifrado del tráfico; el riesgo de phishing y webs falsas sigue.',
+      'Mejora el antivirus del equipo; el riesgo de malware desaparece por completo.',
+      'Mejora el firewall del router; el riesgo de ciberacoso se elimina.',
+      'Mejora la velocidad de conexión; el riesgo de grooming ya no existe.'
+    ],
+    correcta: 0,
+    explicacion: 'Una VPN cifra el tráfico y protege frente a interceptaciones en redes públicas, pero no evita phishing, webs falsas ni malware. Sigue siendo necesario aplicar buenas prácticas.'
+  },
+  {
+    pregunta: 'Un centro educativo detecta que un alumno ha compartido en un grupo de WhatsApp las notas de varios compañeros. ¿Qué principio de protección de datos se ha vulnerado y qué debería hacer el centro?',
+    opciones: [
+      'Confidencialidad de datos personales; informar y aplicar el protocolo.',
+      'Propiedad intelectual; citar la fuente de las notas compartidas.',
+      'Seguridad activa; instalar un antivirus en los móviles del grupo.',
+      'Cifrado de datos; cambiar la contraseña del grupo de WhatsApp.'
+    ],
+    correcta: 0,
+    explicacion: 'Las notas son datos personales. Compartirlas sin consentimiento vulnera la confidencialidad. El centro debe informar y aplicar su protocolo de protección de datos.'
+  },
+  {
+    pregunta: 'Un atacante combina información pública de una persona (nombre, empresa, aficiones) para enviarle un correo muy creíble y robarle datos. ¿Qué técnica es y qué medida de seguridad pasiva reduce más el impacto?',
+    opciones: [
+      'Spear phishing; formación y verificación de remitentes reducen el impacto.',
+      'Ciberacoso; bloquear al remitente y cambiar la contraseña del correo.',
+      'Grooming; no responder al correo y denunciar la cuenta.',
+      'Malware; instalar un antivirus más potente en el ordenador.'
+    ],
+    correcta: 0,
+    explicacion: 'El spear phishing usa información personal para hacer el engaño creíble. La formación y la verificación de remitentes son medidas pasivas que reducen el riesgo de caer.'
+  }
+];
+
+let pruebaAltaIndex = 0;
+let pruebaAltaRespuestaVisible = false;
+let pruebaAltaOrden = []; // Orden aleatorio por pregunta
+
+const pruebaAltaScreen = document.createElement('div');
+pruebaAltaScreen.id = 'pruebaAltaScreen';
+pruebaAltaScreen.style.cssText = 'position:fixed;inset:0;z-index:9999;background:radial-gradient(circle at 30% 20%, #2a0f3f 0%, #12061f 80%);display:none;flex-direction:column;padding:1.5rem 2rem;color:white;';
+document.body.appendChild(pruebaAltaScreen);
+ 
   // ============================================================
   // ESTADO
   // ============================================================
@@ -779,6 +1019,164 @@
     syncInfo.textContent = '';
   }
 
+// ============================================================
+// PRUEBA NIVEL ALTO: FUNCIONES
+// ============================================================
+function barajar(array) {
+  const a = [...array];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function prepararOrdenAlta() {
+  // Para cada pregunta, guardamos un orden aleatorio de índices de opciones
+  pruebaAltaOrden = pruebaAltaData.map(p => barajar([0, 1, 2, 3]));
+}
+
+function renderPruebaAlta() {
+  const p = pruebaAltaData[pruebaAltaIndex];
+  const letras = ['A', 'B', 'C', 'D'];
+  pruebaAltaRespuestaVisible = false;
+
+  // Orden aleatorio de esta pregunta (si no existe, se crea)
+  if (!pruebaAltaOrden[pruebaAltaIndex]) {
+    pruebaAltaOrden[pruebaAltaIndex] = barajar([0, 1, 2, 3]);
+  }
+  const orden = pruebaAltaOrden[pruebaAltaIndex];
+  // Opciones reordenadas
+  const opcionesBarajadas = orden.map(i => p.opciones[i]);
+  // Índice de la correcta dentro del array barajado
+  const correctaBarajada = orden.indexOf(p.correcta);
+
+  pruebaAltaScreen.innerHTML = `
+    <div class="prueba-topbar">
+      <div class="prueba-info">
+        <span class="prueba-badge" style="background:linear-gradient(90deg,#b5179e,#ff9de2);">🧠 PRUEBA NIVEL ALTO</span>
+        <span class="prueba-contador">${pruebaAltaIndex + 1} / ${pruebaAltaData.length}</span>
+      </div>
+      <div class="prueba-botones">
+        <button class="btn-prueba-nav" id="pruebaAltaPrevBtn" ${pruebaAltaIndex === 0 ? 'disabled' : ''}>←</button>
+        <button class="btn-prueba-nav btn-prueba-reveal" id="pruebaAltaRevealBtn">👁 Mostrar respuesta</button>
+        <button class="btn-prueba-nav" id="pruebaAltaNextBtn" ${pruebaAltaIndex === pruebaAltaData.length - 1 ? 'disabled' : ''}>→</button>
+        <button class="btn-prueba-nav btn-prueba-close" id="pruebaAltaCloseBtn">✕ Salir</button>
+      </div>
+    </div>
+    <div class="prueba-progress">
+      <div class="prueba-progress-bar" style="width:${((pruebaAltaIndex + 1) / pruebaAltaData.length) * 100}%;background:linear-gradient(90deg,#b5179e,#ff9de2);"></div>
+    </div>
+    <div class="prueba-main">
+      <div class="prueba-numero" style="color:#ff9de2;">Pregunta ${pruebaAltaIndex + 1}</div>
+      <div class="prueba-pregunta">${p.pregunta}</div>
+      <div class="prueba-opciones">
+        ${opcionesBarajadas.map((op, i) => `
+          <div class="prueba-opcion" data-idx="${i}">
+            <span class="letra" style="background:#ff9de2;color:#2a0f3f;">${letras[i]}</span>
+            <span>${op}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="prueba-respuesta" id="pruebaAltaRespuesta" style="display:none;">
+        <div class="prueba-respuesta-label">✅ Respuesta correcta:</div>
+        <div class="prueba-respuesta-texto" id="pruebaAltaRespuestaTexto"></div>
+        <div class="prueba-explicacion" id="pruebaAltaExplicacion"></div>
+      </div>
+    </div>
+    <div class="prueba-footer">
+      Usa ← → para navegar · Espacio para mostrar/ocultar respuesta · Esc para salir
+    </div>
+  `;
+
+  document.getElementById('pruebaAltaPrevBtn').addEventListener('click', pruebaAltaAnterior);
+  document.getElementById('pruebaAltaNextBtn').addEventListener('click', pruebaAltaSiguiente);
+  document.getElementById('pruebaAltaRevealBtn').addEventListener('click', revelarRespuestaAlta);
+  document.getElementById('pruebaAltaCloseBtn').addEventListener('click', cerrarPruebaAlta);
+}
+
+function revelarRespuestaAlta() {
+  const p = pruebaAltaData[pruebaAltaIndex];
+  const letras = ['A', 'B', 'C', 'D'];
+  const orden = pruebaAltaOrden[pruebaAltaIndex];
+  const correctaBarajada = orden.indexOf(p.correcta);
+  pruebaAltaRespuestaVisible = !pruebaAltaRespuestaVisible;
+
+  const opcionesEls = pruebaAltaScreen.querySelectorAll('.prueba-opcion');
+  if (pruebaAltaRespuestaVisible) {
+    opcionesEls.forEach((div, i) => {
+      if (i === correctaBarajada) div.classList.add('correcta');
+    });
+    const respuestaEl = document.getElementById('pruebaAltaRespuesta');
+    document.getElementById('pruebaAltaRespuestaTexto').textContent = `${letras[correctaBarajada]}. ${p.opciones[p.correcta]}`;
+    document.getElementById('pruebaAltaExplicacion').textContent = p.explicacion;
+    respuestaEl.style.display = 'block';
+    document.getElementById('pruebaAltaRevealBtn').textContent = '🙈 Ocultar respuesta';
+  } else {
+    opcionesEls.forEach(div => div.classList.remove('correcta'));
+    document.getElementById('pruebaAltaRespuesta').style.display = 'none';
+    document.getElementById('pruebaAltaRevealBtn').textContent = '👁 Mostrar respuesta';
+  }
+}
+
+function pruebaAltaSiguiente() {
+  if (pruebaAltaIndex < pruebaAltaData.length - 1) {
+    pruebaAltaIndex++;
+    renderPruebaAlta();
+  } else {
+    mostrarFinPruebaAlta();
+  }
+}
+
+function pruebaAltaAnterior() {
+  if (pruebaAltaIndex > 0) {
+    pruebaAltaIndex--;
+    renderPruebaAlta();
+  }
+}
+
+function mostrarFinPruebaAlta() {
+  pruebaAltaScreen.innerHTML = `
+    <div class="prueba-fin">
+      <h2 style="color:#ff9de2;text-shadow:0 0 30px #b5179e;">🎉 ¡Prueba nivel alto completada!</h2>
+      <p>Has repasado las ${pruebaAltaData.length} preguntas avanzadas de Ciberseguridad.</p>
+      <div style="display:flex; gap:1rem; margin-top:2rem; flex-wrap:wrap; justify-content:center;">
+        <button class="btn btn-primary" id="pruebaAltaReiniciarBtn" style="font-size:1.1rem; padding:1rem 2rem;">🔄 Reiniciar prueba</button>
+        <button class="btn" id="pruebaAltaSalirBtn" style="font-size:1.1rem; padding:1rem 2rem; background:#8b2c3c; border-color:#ff7788;">🚪 Salir</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('pruebaAltaReiniciarBtn').addEventListener('click', () => {
+    pruebaAltaIndex = 0;
+    prepararOrdenAlta();
+    renderPruebaAlta();
+  });
+  document.getElementById('pruebaAltaSalirBtn').addEventListener('click', cerrarPruebaAlta);
+}
+
+function abrirPruebaAlta() {
+  pruebaAltaScreen.style.display = 'flex';
+  pruebaAltaIndex = 0;
+  prepararOrdenAlta();
+  renderPruebaAlta();
+}
+
+function cerrarPruebaAlta() {
+  pruebaAltaScreen.style.display = 'none';
+}
+
+// Eventos
+document.getElementById('abrirPruebaAltaBtn').addEventListener('click', abrirPruebaAlta);
+
+// Teclado para la prueba alta
+document.addEventListener('keydown', (e) => {
+  if (pruebaAltaScreen.style.display !== 'flex') return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); pruebaAltaSiguiente(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); pruebaAltaAnterior(); }
+  else if (e.key === ' ') { e.preventDefault(); revelarRespuestaAlta(); }
+  else if (e.key === 'Escape') { cerrarPruebaAlta(); }
+});
+ 
   // ============================================================
   // PRUEBA EVALUABLE (PIZARRA)
   // ============================================================
